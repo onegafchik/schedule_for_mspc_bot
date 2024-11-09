@@ -54,6 +54,7 @@ bot.command("start", async (context) => {
     context.session.isWaitingForNewGroup = true
     context.session.group = undefined
     
+    await context.reply("Бот запущен 🎉")
     await context.reply("Укажите группу (Пример: 32Н)")
 })
 
