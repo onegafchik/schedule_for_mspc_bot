@@ -90,9 +90,10 @@ bot.hears(["Сегодня", "Завтра", "Понедельник"], async (c
         if (scheduleForGroup) {
             const lessonsString = scheduleForGroup.lessons
                 .filter((row) => row.trim() !== "")
-                .reduce((string, lesson) => string + lesson.trimLeft() + "\n", "")
+                .map((row) => /\d/.test(row.trimLeft()[0]) ? `\n${row.trimLeft()}` : row.trimLeft())
+                .reduce((string, lesson) => string + lesson + "\n", "")
 
-            await context.reply(`Расписание на ${schedule.date} (${scheduleForGroup.name})\n\n${lessonsString}`)
+            await context.reply(`Расписание на ${schedule.date} (${scheduleForGroup.name})\n${lessonsString}`)
         } else {
             await context.reply(`Расписание для ${!context.session.group ? "" : context.session.group} не найдено`)            
         }
