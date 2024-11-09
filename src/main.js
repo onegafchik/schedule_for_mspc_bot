@@ -10,7 +10,7 @@ import { menuKeyboard } from "./keyboard.js"
 import { MatroshiloService } from "./services/matroshilo-service.js"
 import { random } from "./utils/math.js"
 
-import matroshiloConfig from "../config/matroshilo-config.json" assert { type: "json" }
+import matroshiloConfig from "../config/matroshilo-config.json" with { type: "json" }
 
 dotenv.config()
 
