@@ -6,4 +6,4 @@ COPY . .
 
 RUN npm install -g pm2
 
-CMD ["sudo", "./src/main.js"]
+CMD ["pm2", "./src/main.js"]
