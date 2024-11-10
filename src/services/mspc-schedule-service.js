@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser"
-import moment from "moment"
+import moment from "moment-timezone"
 
 export class MSPCScheduleService {
     static #parser = new XMLParser()

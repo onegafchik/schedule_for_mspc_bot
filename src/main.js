@@ -2,12 +2,14 @@ import { Bot, GrammyError, HttpError, session } from "grammy"
 import { limit } from "@grammyjs/ratelimiter"
 import { freeStorage } from "@grammyjs/storage-free"
 import dotenv from "dotenv"
-import moment from "moment"
+import moment from "moment-timezone"
 import nodeSchedule from "node-schedule"
 import { MSPCScheduleService } from "./services/mspc-schedule-service.js"
 import { menuKeyboard } from "./keyboard.js"
 
 dotenv.config()
+
+moment.tz.setDefault("Europe/Minsk")
 
 const bot = new Bot(process.env.TELEGRAM_API_TOKEN)
 
