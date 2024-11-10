@@ -4,21 +4,16 @@ import { freeStorage } from "@grammyjs/storage-free"
 import dotenv from "dotenv"
 import moment from "moment"
 import nodeSchedule from "node-schedule"
-import path from "path"
 import { MSPCScheduleService } from "./services/mspc-schedule-service.js"
 import { menuKeyboard } from "./keyboard.js"
-import { MatroshiloService } from "./services/matroshilo-service.js"
-import { random } from "./utils/math.js"
-
-import matroshiloConfig from "../config/matroshilo-config.json" with { type: "json" }
 
 dotenv.config()
 
 const bot = new Bot(process.env.TELEGRAM_API_TOKEN)
 
-const matroshiloService = new MatroshiloService(path.resolve("tomatoes.json"))
-
 function start() {
+    console.log(`[${moment().format("DD.MM HH:mm")}]Bot is running...`)
+
     bot.start()
 
     MSPCScheduleService.request()
@@ -41,8 +36,6 @@ function start() {
             }
         })
     }
-
-    nodeSchedule.scheduleJob("* */20 * * * *", () => matroshiloService.save())
 }
 
 bot
@@ -110,24 +103,6 @@ bot.hears([...phrasesTuple], async (context) => {
     } else {
         await context.reply(`Расписание на ${context.message.text.toLowerCase()} недоступно`)
     }
-})
-
-bot.hears("Кинуть 🍅 в Матрошило", async (context) => {
-    const change = random(1, 100)
-    let phrase = ""
-
-    if (change <= matroshiloConfig.chanceOfHit) {
-        matroshiloService.add()
-        phrase = `✅ ${matroshiloConfig.phrases.hitGoodPhrases[random(0, matroshiloConfig.phrases.hitGoodPhrases.length - 1)]}` 
-    } else {
-        phrase = `❌ ${matroshiloConfig.phrases.hitBadPhrases[random(0, matroshiloConfig.phrases.hitBadPhrases.length - 1)]}`
-    }
-
-    await context.reply(phrase ?? "")
-})
-
-bot.hears("Сколько 🍅", async (context) => {
-    await context.reply(matroshiloConfig.phrases.all.replaceAll("$count", matroshiloService.getTomatoesCount) ?? "")
 })
 
 bot.catch((error) => {

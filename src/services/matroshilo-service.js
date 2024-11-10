@@ -34,7 +34,7 @@ export class MatroshiloService {
             const parsedData = await JSON.parse(data)
             return (parsedData.tomatoesCount ?? 0)
         } catch (error) {
-            console.log(`[${moment().format("DD.MM HH:mm")}]:Tomato file reading error`)
+            console.log(`[${moment().format("DD.MM HH:mm")}]: Tomato file reading error`)
 
             if (error.code === "ENOENT") {
                 await this.save()
