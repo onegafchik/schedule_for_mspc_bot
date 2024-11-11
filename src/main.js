@@ -6,37 +6,43 @@ import moment from "moment-timezone"
 import nodeSchedule from "node-schedule"
 import { MSPCScheduleService } from "./services/mspc-schedule-service.js"
 import { menuKeyboard } from "./keyboard.js"
+import { range } from "./utils/math.js"
 
 dotenv.config()
 
 moment.tz.setDefault("Europe/Minsk")
+moment.updateLocale("en", {
+    week: {
+        dow: 1
+    }
+})
 
 const bot = new Bot(process.env.TELEGRAM_API_TOKEN)
 
 function start() {
-    console.log(`[${moment().format("DD.MM HH:mm")}]Bot is running...`)
+    console.log(`[${moment().format("DD.MM HH:mm")}] Bot is running...`)
 
     bot.start()
 
     MSPCScheduleService.request()
 
-    const timesForRequest = process.env.TIMES_FOR_REQUEST.split(" ").map((time) => Number(time) ?? 10)
-
-    for (const time of timesForRequest) {
-        nodeSchedule.scheduleJob({
-            hour: time,
-            minute: 0,
-            tz: "Europe/Minsk"
-        }, async () => {
-            console.log(`[${moment().format("DD.MM HH")}]: Update schedule...`)
-
-            try {
-                await MSPCScheduleService.request()
-                console.log(`[${moment().format("DD.MM HH")}]: Schedule updated successful`)
-            } catch {
-                console.log(`[${moment().format("DD.MM HH")}]: Schedule updated with error`)
-            }
-        })
+    for (const hour of range(9)) {
+        for (const minute of range(3)) {
+            nodeSchedule.scheduleJob({
+                hour: hour + 8,
+                minute: minute * 20,
+                tz: "Europe/Minsk"
+            }, async () => {
+                console.log(`[${moment().format("DD.MM HH:mm")}]: Update schedule...`)
+    
+                try {
+                    await MSPCScheduleService.request()
+                    console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated successful`)
+                } catch {
+                    console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated with error`)
+                }
+            })    
+        }
     }
 }
 

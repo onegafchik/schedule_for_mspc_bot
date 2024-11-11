@@ -12,7 +12,7 @@ export class MSPCScheduleService {
 
     static async request() {
         const dates = [moment(), moment().add(1, "day"), moment().day(8)]
-    
+        
         let index = 0
         for await (const date of dates) {
             try {
@@ -23,7 +23,8 @@ export class MSPCScheduleService {
 
                 const schedule = this.#createSchedule(parsedData)
                 MSPCScheduleService.#schedules[index] = schedule
-            } catch {
+            } catch (error) {
+                console.log(`Request schedule for ${date.format("DD.MM.YYYY")} error: ${error}`)
                 MSPCScheduleService.#schedules[index] = null
             } finally {
                 index += 1
@@ -37,7 +38,10 @@ export class MSPCScheduleService {
             groups: []
         }
 
-        schedule.date = parsedData.Pages.Page.at(0)?.P.at(0)?.T.match(/\d{2}\.\d{2}\.\d{4}/).at(0) ?? ""
+        let date = parsedData.Pages.Page[0].P[0]?.T
+        Array.isArray(date) ? date = date[0] : date
+
+        schedule.date = date.match(/\d{2}\.\d{2}\.\d{4}/).at(0) ?? ""
 
         let groups = []
 
@@ -46,6 +50,10 @@ export class MSPCScheduleService {
                 P
                     .filter(({ T }) => T !== undefined)
                     .forEach(({ T }) => {
+                        if (Array.isArray(T)) {
+                            return
+                        }
+
                         const row = T
                             .split("│")
                             .filter((row) => row != "")
