@@ -19,6 +19,10 @@ export class MSPCScheduleService {
                 const response = await fetch(`https://pnl1-word-view.officeapps.live.com/wv/ResReader.ashx?n=p_1_10.xml&v=00000000-0000-0000-0000-000000000802&usid=5cad53d1-2333-4344-9258-05f17d369909&build=20241101.9&WOPIsrc=https%3A%2F%2Fpnl1%2Dview%2Dwopi%2Ewopi%2Eonline%2Eoffice%2Enet%3A810%2Foh%2Fwopi%2Ffiles%2F%40%2FwFileId%3FwFileId%3Dhttps%253A%252F%252Fmgpk%252Ebntu%252Eby%253A443%252Fwp%252Dcontent%252Fuploads%252F${date.format("YYYY")}%252F${date.format("MM")}%252F${date.format("DD")}%252E${date.format("MM")}%252E${date.format("YYYY")}%252Draspisanie%252Duchashhihsya%252Edoc&access_token=1&access_token_ttl=0&z=08d1f5ad785e38636e7f2fb8111df4350059e0ff692121a06ac9f313c13fdbbc&waccluster=PNL1`)
                 const data = await response.text()
 
+                if (response.status !== 200) {
+                    return null
+                }
+
                 const parsedData = await MSPCScheduleService.#parser.parse(data)
 
                 const schedule = this.#createSchedule(parsedData)

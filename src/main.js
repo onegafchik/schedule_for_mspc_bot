@@ -24,7 +24,13 @@ function start() {
 
     bot.start()
 
-    MSPCScheduleService.request()
+    requestSchedule()
+
+    nodeSchedule.scheduleJob({
+        hour: 0,
+        minute: 1,
+        tz: "Europe/Minsk"
+    }, requestSchedule)
 
     for (const hour of range(9)) {
         for (const minute of range(3)) {
@@ -32,17 +38,19 @@ function start() {
                 hour: hour + 8,
                 minute: minute * 20,
                 tz: "Europe/Minsk"
-            }, async () => {
-                console.log(`[${moment().format("DD.MM HH:mm")}]: Update schedule...`)
-    
-                try {
-                    await MSPCScheduleService.request()
-                    console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated successful`)
-                } catch {
-                    console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated with error`)
-                }
-            })    
+            }, requestSchedule)
         }
+    }
+}
+
+async function requestSchedule() {
+    console.log(`[${moment().format("DD.MM HH:mm")}]: Update schedule...`)
+    
+    try {
+        await MSPCScheduleService.request()
+        console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated successful`)
+    } catch {
+        console.log(`[${moment().format("DD.MM HH:mm")}]: Schedule updated with error`)
     }
 }
 
