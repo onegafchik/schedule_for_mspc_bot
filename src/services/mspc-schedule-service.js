@@ -20,7 +20,8 @@ export class MSPCScheduleService {
                 const data = await response.text()
 
                 if (response.status !== 200) {
-                    return null
+                    MSPCScheduleService.#schedules[index] = null
+                    continue
                 }
 
                 const parsedData = await MSPCScheduleService.#parser.parse(data)
